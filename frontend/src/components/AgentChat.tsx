@@ -10,20 +10,47 @@ const AGENT_COLORS: Record<string, string> = {
   verifier: "bg-amber-100 text-amber-800 border-amber-200",
 };
 
+const LOADING_MESSAGES = [
+  "Supervisor is planning the research task...",
+  "Researcher is gathering information...",
+  "Verifier is checking the output...",
+  "Analyst is synthesizing findings...",
+  "Finalizing the report...",
+];
+
 export default function AgentChat() {
   const [task, setTask] = useState("");
   const [result, setResult] = useState<RunResult | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [loadingMsg, setLoadingMsg] = useState(LOADING_MESSAGES[0]);
 
   const handleRun = async () => {
     if (!task.trim()) return;
     setLoading(true);
+    setError(null);
+    setResult(null);
+
+    let msgIdx = 0;
+    const msgInterval = setInterval(() => {
+      msgIdx = (msgIdx + 1) % LOADING_MESSAGES.length;
+      setLoadingMsg(LOADING_MESSAGES[msgIdx]);
+    }, 8000);
+
     try {
       const res = await runResearch(task);
       setResult(res);
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      const msg = err?.message || "An error occurred";
+      if (msg.includes("429") || msg.includes("rate")) {
+        setError("Rate limit reached. Please wait 15 seconds and try again.");
+      } else if (msg.includes("Failed to fetch")) {
+        setError("Cannot connect to backend. Make sure the server is running on port 8001.");
+      } else {
+        setError(msg);
+      }
     } finally {
+      clearInterval(msgInterval);
       setLoading(false);
     }
   };
@@ -58,6 +85,23 @@ export default function AgentChat() {
             )}
           </button>
         </div>
+
+        {loading && (
+          <div className="mt-4 flex items-center gap-3 text-sm text-gray-500">
+            <div className="flex gap-1">
+              <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+              <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+              <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+            </div>
+            <span>{loadingMsg}</span>
+          </div>
+        )}
+
+        {error && (
+          <div className="mt-4 bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 text-sm">
+            {error}
+          </div>
+        )}
       </div>
 
       {result && (

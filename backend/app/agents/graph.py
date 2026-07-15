@@ -1,5 +1,6 @@
 import asyncio
 import json
+import logging
 import time
 from typing import Annotated
 from uuid import UUID
@@ -17,6 +18,7 @@ from ..trust.policy import run_trust_policies
 from ..trust.scores import TrustScoreManager
 
 settings = get_settings()
+logger = logging.getLogger(__name__)
 
 RESEARCHER_SYSTEM = """You are a Research Agent on a technical due-diligence team.
 Your job is to gather factual information about the given topic.
@@ -76,7 +78,7 @@ def _invoke_llm(llm, messages, retries=4):
         except Exception as e:
             if "429" in str(e) or "rate" in str(e).lower():
                 wait = 2 ** (attempt + 2)
-                print(f"[RateLimit] Waiting {wait}s before retry {attempt + 1}/{retries}")
+                logger.warning(f"Rate limit hit, waiting {wait}s before retry {attempt + 1}/{retries}")
                 time.sleep(wait)
             else:
                 raise

@@ -37,6 +37,7 @@ async def root():
         "version": "1.0.0",
         "description": "Trust-Gated Multi-Agent Research Team",
         "endpoints": {
+            "health": "GET /api/health",
             "run": "POST /api/run",
             "chain": "GET /api/chain/{run_id}",
             "verify": "GET /api/chain/{run_id}/verify",
@@ -45,3 +46,8 @@ async def root():
             "audit_report": "GET /api/chain/{run_id}/audit-report",
         },
     }
+
+
+@app.get("/api/health")
+async def health():
+    return {"status": "ok", "version": "1.0.0"}

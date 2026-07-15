@@ -119,6 +119,7 @@ A multi-agent research system where specialized agents collaborate on technical 
 ### 1. Clone & Configure
 
 ```bash
+git clone https://github.com/TanmayShah29/trust-gated-agent-team.git
 cd trust-gated-agent-team
 cp backend/.env.example backend/.env
 # Edit backend/.env and add your GROQ_API_KEY
@@ -146,6 +147,7 @@ The UI will be available at `http://localhost:3000`
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
+| `GET` | `/api/health` | Health check |
 | `POST` | `/api/run` | Submit a research task to the agent team |
 | `GET` | `/api/chain/{run_id}` | Get all chain entries for a run |
 | `GET` | `/api/chain/{run_id}/verify` | Verify chain integrity |
