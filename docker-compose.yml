@@ -7,8 +7,6 @@ services:
       POSTGRES_USER: trustchain
       POSTGRES_PASSWORD: trustchain
       POSTGRES_DB: trustchain
-    ports:
-      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -19,7 +17,7 @@ services:
 
   backend:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
@@ -32,7 +30,7 @@ services:
       postgres:
         condition: service_healthy
     volumes:
-      - ./app:/app/app
+      - ./backend/app:/app/app
 
 volumes:
   pgdata:

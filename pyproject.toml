@@ -1,0 +1,53 @@
+[project]
+name = "trust-gated-agent-team"
+version = "0.1.0"
+description = "TrustChain — multi-agent research system with cryptographic audit trail and trust policies."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+dependencies = [
+    "fastapi==0.115.6",
+    "uvicorn[standard]==0.34.0",
+    "sqlalchemy==2.0.36",
+    "asyncpg==0.30.0",
+    "alembic==1.14.1",
+    "pydantic==2.10.5",
+    "pydantic-settings==2.7.1",
+    "langgraph==0.2.60",
+    "langchain-core==0.3.31",
+    "langchain-groq==0.2.2",
+    "langchain-community==0.3.14",
+    "httpx==0.28.1",
+    "python-dotenv==1.0.1",
+    "psycopg2-binary==2.9.10",
+    "greenlet==3.5.3",
+    "websockets==14.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=6.0.0",
+    "pytest-asyncio>=0.24.0",
+    "ruff>=0.8.0",
+    "mypy>=1.13.0",
+    "httpx>=0.27.0",
+]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP", "B", "SIM"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
